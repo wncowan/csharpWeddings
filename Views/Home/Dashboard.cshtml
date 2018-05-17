@@ -1,0 +1,63 @@
+@model csharpWeddings.Models.Wrapper
+
+<h1>Hello, @ViewBag.User.FirstName! Welcome to the Wedding Planner</h1>
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Wedding</th>
+            <th>Date</th>
+            <th>Guest(s)</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+@{
+    foreach(var wedding in ViewBag.Weddings)
+    {
+        <tr>
+            <td><a href="/weddings/@wedding.Id">@wedding.WedderOne & @wedding.WedderTwo</a></td>
+            <td>@wedding.Date.ToString("D")</td>
+            <td>@wedding.Guests.Count</td>
+
+        
+            @{
+                bool attending = false;
+            
+                if(@wedding.CreatorId == @ViewBag.User.UserId)
+                {
+                    <td><a href="/weddings/@wedding.Id/delete">Delete</a></td>
+                }
+                else
+                {
+                    foreach(var guest in @wedding.Guests)
+                    {
+                        if(@guest.UserId == @ViewBag.User.UserId)
+                        {
+                            attending = true;
+                            
+                        }
+                    }
+                    if(attending == true){
+                        <td><a href="/weddings/@wedding.Id/leave">Un-RSVP</a></td>
+                    }
+                    else{
+                        <td><a href="/weddings/@wedding.Id/rsvp">RSVP</a></td>  
+                    }
+                }
+            }
+
+
+        </tr>
+    }
+}
+        
+ 
+
+
+    </tbody>
+</table>
+<hr>
+<p><a href="/weddings/create">New Wedding</a> | <a href="/logout">Logout</a></p>

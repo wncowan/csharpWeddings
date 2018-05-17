@@ -1,0 +1,28 @@
+@model csharpWeddings.Models.WeddingViewModel
+
+<h2>Plan Your Wedding</h2>
+
+<form action="/addWedding" method="POST">
+    <label for="WedderOne">Wedder One</label>
+    <input asp-for="WedderOne" type="text" name="wedderOne" placeholder="Enter a name"><br>
+    <span asp-validation-for="WedderOne"></span><br>
+
+    <label for="WedderTwo">Wedder Two</label>
+    <input asp-for="WedderTwo" type="text" name="wedderTwo" placeholder="Enter a name"><br>
+    <span asp-validation-for="WedderTwo"></span><br>
+
+    <label for="Date">Date:</label>
+    <input asp-for="Date" type="date" name="date"><br><br>
+    @if (TempData["DateError"] != null)
+    {
+        <li>@TempData["DateError"]</li>
+    }
+
+    <label for="Address">Address</label>
+    <input asp-for="Address" type="text" name="address" placeholder="Enter an address"><br>
+    <span asp-validation-for="Address"></span><br>
+
+    <input type="submit" value="Add Wedding">
+</form>
+<hr>
+<p><a href="/dashboard">Dashboard</a> | <a href="/logout">Logout</a></p>

@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Wedding Planner";
+}
+
+@model csharpWeddings.Models.RegisterViewModel
+
+<h2>Welcome! Please register</h2>
+<form action="/register" method="POST">
+    
+    <label for="FirstName">First Name: </label>
+    <input asp-for="FirstName" name="FirstName" type="text" placeholder="Enter first name"><br>
+    <span asp-validation-for="FirstName"></span><br>
+
+    <label for="LastName">Last Name: </label>
+    <input asp-for="LastName" name="LastName" type="text" placeholder="Enter last name"><br>
+    <span asp-validation-for="LastName"></span><br>
+
+    <label for="Email">Email: </label>
+    <input asp-for="Email" name="Email" type="email" placeholder="Enter email"><br>
+    @{
+        if(TempData["EmailInUseError"] != null){
+                <small id="nameHelp" class="error-message form-text text-muted">@TempData["EmailInUseError"]</small>
+        }
+    }
+    <span asp-validation-for="Email"></span><br>
+
+    <label for="Password">Password: </label>
+    <input asp-for="Password" name="Password" type="password"><br>
+    <span asp-validation-for="Password"></span><br>
+    
+    <label for="ConfirmPassword">Confirm Password: </label>
+    <input asp-for="ConfirmPassword" name="ConfirmPassword" type="password"><br>
+    <span asp-validation-for="ConfirmPassword"></span><br>
+        
+    <button type="submit">Register</button>
+</form>
+<hr>
+@{
+    if(TempData["UserError"] != null)
+    {
+        <p style="color: blue">@TempData["UserError"]</p>
+    }
+}
+<h2>Login:</h2>
+<form asp-controller="Home" asp-action="Login" method="POST">
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <input name="Email" type="text" aria-describedby="nameHelp" class="form-control" id="LoginEmail" placeholder="Enter email">
+            @{
+                if(TempData["EmailError"] != null){
+                        <small id="nameHelp" class="error-message form-text text-muted">@TempData["EmailError"]</small>
+                }
+            }
+    </div>
+        <div class="form-group">
+        <label for="password">Password</label>
+        <input name="password" aria-describedby="passwordHelp" class="form-control" id="password" type="password">
+            @{
+                if(TempData["PasswordError"] != null){
+                        <small id="passwordHelp" class="error-message form-text text-muted">@TempData["PasswordError"]</small>
+                }
+            }
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>

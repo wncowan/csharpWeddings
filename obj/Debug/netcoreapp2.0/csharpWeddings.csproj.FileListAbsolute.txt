@@ -1,0 +1,11 @@
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/bin/Debug/netcoreapp2.0/csharpWeddings.deps.json
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/bin/Debug/netcoreapp2.0/csharpWeddings.runtimeconfig.json
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/bin/Debug/netcoreapp2.0/csharpWeddings.runtimeconfig.dev.json
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/bin/Debug/netcoreapp2.0/csharpWeddings.dll
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/bin/Debug/netcoreapp2.0/csharpWeddings.pdb
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/obj/Debug/netcoreapp2.0/csharpWeddings.csprojResolveAssemblyReference.cache
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/obj/Debug/netcoreapp2.0/csharpWeddings.csproj.CoreCompileInputs.cache
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/obj/Debug/netcoreapp2.0/csharpWeddings.AssemblyInfoInputs.cache
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/obj/Debug/netcoreapp2.0/csharpWeddings.AssemblyInfo.cs
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/obj/Debug/netcoreapp2.0/csharpWeddings.dll
+/Users/wesleycowan/Desktop/DojoAssignments/netCore/csharpWeddings/obj/Debug/netcoreapp2.0/csharpWeddings.pdb
