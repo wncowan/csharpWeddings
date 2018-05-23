@@ -1,15 +1,38 @@
 @model csharpWeddings.Models.WeddingViewModel
 
-<h2>Plan Your Wedding</h2>
+<h2>Plan Your Match</h2>
+
+
 
 <form action="/addWedding" method="POST">
-    <label for="WedderOne">Wedder One</label>
+    <!-- <label for="WedderOne">Wedder One</label>
     <input asp-for="WedderOne" type="text" name="wedderOne" placeholder="Enter a name"><br>
+    
     <span asp-validation-for="WedderOne"></span><br>
 
     <label for="WedderTwo">Wedder Two</label>
     <input asp-for="WedderTwo" type="text" name="wedderTwo" placeholder="Enter a name"><br>
-    <span asp-validation-for="WedderTwo"></span><br>
+    <span asp-validation-for="WedderTwo"></span><br> -->
+
+    <label for="WedderOne">Player One</label>
+    <select asp-for="WedderOne">
+    @{
+        foreach(var user in ViewBag.Users)
+        {        
+                <option value="@user.Username">@user.Username</option>
+        }
+    }
+    </select>
+    <label for="WedderTwo">Player Two</label>
+    <select asp-for="WedderTwo">
+    @{
+        foreach(var user in ViewBag.Users)
+        {        
+                <option value="@user.Username">@user.Username</option>
+        }
+    }
+    </select>
+
 
     <label for="Date">Date:</label>
     <input asp-for="Date" type="date" name="date"><br><br>
@@ -22,7 +45,7 @@
     <input asp-for="Address" type="text" name="address" placeholder="Enter an address"><br>
     <span asp-validation-for="Address"></span><br>
 
-    <input type="submit" value="Add Wedding">
+    <input type="submit" value="Add Match">
 </form>
 <hr>
 <p><a href="/dashboard">Dashboard</a> | <a href="/logout">Logout</a></p>

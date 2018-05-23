@@ -43,9 +43,10 @@ namespace csharpWeddings.Controllers
                 }
                 User newUser = new User
                 {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
+                    Username = model.Username,
                     Email = model.Email,
+                    Wins = 0,
+                    Losses = 0,
                     Created_At = DateTime.Now,
                     Updated_At = DateTime.Now
                 };
@@ -54,7 +55,7 @@ namespace csharpWeddings.Controllers
                 _context.Add(newUser);
                 _context.SaveChanges();
                 HttpContext.Session.SetInt32("currentUserId", newUser.UserId);
-                HttpContext.Session.SetString("currentFirstName", newUser.FirstName);
+                HttpContext.Session.SetString("currentFirstName", newUser.Username);
                 return RedirectToAction("Dashboard");
             }
             else
@@ -130,6 +131,14 @@ namespace csharpWeddings.Controllers
             {
                 User currentUser = _context.Users.SingleOrDefault(u => u.UserId == (int)userId);
                 ViewBag.User = currentUser;
+
+                List<User> users = _context.Users.ToList();
+                Console.WriteLine(users);
+                List<Wedding> weddings = _context.Weddings.ToList();
+                List<Guest> guests = _context.Guests.ToList();
+
+                ViewBag.Users = users;
+
                 return View();
             }
         }
@@ -195,8 +204,48 @@ namespace csharpWeddings.Controllers
                 // List<User> allUsers = _context.Users.ToList();
 
                 // ViewBag.Users = allUsers;
+                User winner = _context.Users.SingleOrDefault(u => u.UserId == thisWedding.WinnerId);
+                User loser = _context.Users.SingleOrDefault(u => u.UserId == thisWedding.LoserId);
+                List<Post> posts = _context.Posts.Where(p => p.WeddingId == (int)weddingId).Include(p => p.Creator).Include(p => p.Comments).ToList();
+
+                ViewBag.Winner = winner;
+                ViewBag.Loser = loser;
+                ViewBag.Posts = posts;
                 ViewBag.Wedding = thisWedding;
                 ViewBag.Guests = guests;
+                
+                return View();
+            }
+        }
+
+        [HttpGet]
+        [Route("/users/{userid}")]
+        public IActionResult ShowUser(int userid)
+        {
+            int? userId = HttpContext.Session.GetInt32("currentUserId");
+            if (userId == null)
+            {
+                TempData["UserError"] = "You must be logged in!";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                User currentUser = _context.Users.SingleOrDefault(u => u.UserId == (int)userId);
+                ViewBag.User = currentUser;
+
+                User showUser = _context.Users.Include(u => u.Posts).Include(u => u.Comments).SingleOrDefault(u => u.UserId == userid);
+                ViewBag.ShowUser = showUser;
+
+                // Wedding thisWedding = _context.Weddings.SingleOrDefault(w => w.Id == (int)weddingId);
+                // List<Guest> guests = _context.Guests.Where(g => g.WeddingId == (int)weddingId).Include(g => g.User).ToList();
+                // List<User> allUsers = _context.Users.ToList();
+
+                // ViewBag.Users = allUsers;
+                // User winner = _context.Users.SingleOrDefault(u => u.UserId == thisWedding.WinnerId);
+                // User loser = _context.Users.SingleOrDefault(u => u.UserId == thisWedding.LoserId);
+
+                // ViewBag.Winner = winner;
+                // ViewBag.Loser = loser;
                 return View();
             }
         }
@@ -225,6 +274,47 @@ namespace csharpWeddings.Controllers
                     User = currentUser
                 };
                 _context.Add(newGuest);
+                _context.SaveChanges();
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        [HttpGet]
+        [Route("/weddings/{weddingId}/simulate")]
+        public IActionResult Simulate(int weddingId)
+        {
+            int? userId = HttpContext.Session.GetInt32("currentUserId");
+            if (userId == null)
+            {
+                TempData["UserError"] = "You must be logged in!";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                User currentUser = _context.Users.SingleOrDefault(u => u.UserId == (int)userId);
+                ViewBag.User = currentUser;
+                Wedding thisWedding = _context.Weddings.SingleOrDefault(w => w.Id == (int)weddingId);
+
+                User p1 = _context.Users.SingleOrDefault(u => u.Username == thisWedding.WedderOne);
+                User p2 = _context.Users.SingleOrDefault(u => u.Username == thisWedding.WedderTwo);
+                Random rand = new Random();
+                if(rand.Next(1,100) - p1.UserId < rand.Next(1,100) - p2.UserId)
+                {
+                    thisWedding.WinnerId = p1.UserId;
+                    thisWedding.LoserId = p2.UserId;
+                    p1.Wins += 1;
+                    p2.Losses += 1;
+                    
+                }
+                else
+                {
+                    thisWedding.WinnerId = p2.UserId;
+                    thisWedding.LoserId = p1.UserId;
+                    p2.Wins += 1;
+                    p1.Losses += 1;
+                    
+                }
+                
                 _context.SaveChanges();
                 return RedirectToAction("Dashboard");
             }
@@ -282,6 +372,78 @@ namespace csharpWeddings.Controllers
                 _context.Remove(thisWedding);
                 _context.SaveChanges();
                 return RedirectToAction("Dashboard");
+            }
+        }
+
+        [HttpPost]
+        [Route("/weddings/{weddingId}/post")]
+        public IActionResult Post(Post model, int weddingId)
+        {
+            int? userId = HttpContext.Session.GetInt32("currentUserId");
+            if (userId == null)
+            {
+                TempData["UserError"] = "You must be logged in!";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                User currentUser = _context.Users.SingleOrDefault(u => u.UserId == (int)userId);
+                ViewBag.User = currentUser;
+                Wedding thisWedding = _context.Weddings.SingleOrDefault(w => w.Id == (int)weddingId);
+                
+                if(ModelState.IsValid)
+                {
+                    Post newPost = new Post
+                    {
+                        Content = model.Content,
+                        UserId = currentUser.UserId,
+                        Creator = currentUser,
+                        WeddingId = thisWedding.Id,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now 
+                    };
+                    _context.Add(newPost);
+                    _context.SaveChanges();
+                }
+
+                
+                return RedirectToAction("Wedding");
+            }
+        }
+
+        [HttpPost]
+        [Route("/weddings/{weddingId}/{postId}/comment")]
+        public IActionResult Comment(Comment model, int postId, int weddingId)
+        {
+            int? userId = HttpContext.Session.GetInt32("currentUserId");
+            if (userId == null)
+            {
+                TempData["UserError"] = "You must be logged in!";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                User currentUser = _context.Users.SingleOrDefault(u => u.UserId == (int)userId);
+                ViewBag.User = currentUser;
+                Post thisPost = _context.Posts.SingleOrDefault(w => w.PostId == (int)postId);
+                
+                if(ModelState.IsValid)
+                {
+                    Comment newComment = new Comment
+                    {
+                        Content = model.Content,
+                        UserId = currentUser.UserId,
+                        Creator = currentUser,
+                        PostId = thisPost.PostId,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now 
+                    };
+                    _context.Add(newComment);
+                    _context.SaveChanges();
+                }
+
+                
+                return RedirectToAction("Wedding");
             }
         }
 

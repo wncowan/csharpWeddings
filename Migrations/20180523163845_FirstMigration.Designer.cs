@@ -11,15 +11,39 @@ using System;
 namespace csharpWeddings.Migrations
 {
     [DbContext(typeof(WeddingContext))]
-    [Migration("20180514040744_FirstMigration")]
+    [Migration("20180523163845_FirstMigration")]
     partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
+                .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
+                .HasAnnotation("ProductVersion", "2.0.2-rtm-10011");
+
+            modelBuilder.Entity("csharpWeddings.Models.Comment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("PostId");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("CommentId");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
 
             modelBuilder.Entity("csharpWeddings.Models.Guest", b =>
                 {
@@ -39,6 +63,30 @@ namespace csharpWeddings.Migrations
                     b.ToTable("Guests");
                 });
 
+            modelBuilder.Entity("csharpWeddings.Models.Post", b =>
+                {
+                    b.Property<int>("PostId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<int>("UserId");
+
+                    b.Property<int>("WeddingId");
+
+                    b.HasKey("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WeddingId");
+
+                    b.ToTable("Posts");
+                });
+
             modelBuilder.Entity("csharpWeddings.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -48,13 +96,15 @@ namespace csharpWeddings.Migrations
 
                     b.Property<string>("Email");
 
-                    b.Property<string>("FirstName");
-
-                    b.Property<string>("LastName");
+                    b.Property<int>("Losses");
 
                     b.Property<string>("Password");
 
                     b.Property<DateTime>("Updated_At");
+
+                    b.Property<string>("Username");
+
+                    b.Property<int>("Wins");
 
                     b.HasKey("UserId");
 
@@ -72,17 +122,34 @@ namespace csharpWeddings.Migrations
 
                     b.Property<DateTime>("Date");
 
+                    b.Property<int>("LoserId");
+
                     b.Property<int?>("UserId");
 
                     b.Property<string>("WedderOne");
 
                     b.Property<string>("WedderTwo");
 
+                    b.Property<int>("WinnerId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Weddings");
+                });
+
+            modelBuilder.Entity("csharpWeddings.Models.Comment", b =>
+                {
+                    b.HasOne("csharpWeddings.Models.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("csharpWeddings.Models.User", "Creator")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("csharpWeddings.Models.Guest", b =>
@@ -94,6 +161,19 @@ namespace csharpWeddings.Migrations
 
                     b.HasOne("csharpWeddings.Models.Wedding", "Wedding")
                         .WithMany("Guests")
+                        .HasForeignKey("WeddingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("csharpWeddings.Models.Post", b =>
+                {
+                    b.HasOne("csharpWeddings.Models.User", "Creator")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("csharpWeddings.Models.Wedding", "Wedding")
+                        .WithMany("Posts")
                         .HasForeignKey("WeddingId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

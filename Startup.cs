@@ -27,7 +27,7 @@ namespace csharpWeddings // CHANGE DEPENDING ON PROJECT
         public void ConfigureServices(IServiceCollection services)
         {
             // CHANGE CONTEXT VARIABLE DEPENDING ON PROJECT
-            services.AddDbContext<WeddingContext>(options => options.UseNpgsql(Configuration["DBInfo:ConnectionString"]));
+            services.AddDbContext<WeddingContext>(options => options.UseMySql(Configuration["DBInfo:ConnectionString"]));
             services.AddMvc();
             services.AddSession();
         }

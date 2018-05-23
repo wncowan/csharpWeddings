@@ -1,63 +1,117 @@
 @model csharpWeddings.Models.Wrapper
 
-<h1>Hello, @ViewBag.User.FirstName! Welcome to the Wedding Planner</h1>
+<hr>
+<p><a href="/weddings/create">New Match</a> | <a href="/logout">Logout</a></p>
+<hr>
 
+<h1>Hello, @ViewBag.User.Username! Welcome to the Ping Pong Planner</h1>
+
+<h3>Stats</h3>
 <table class="table table-responsive">
     <thead>
         <tr>
-            <th>Wedding</th>
+            <th>Username</th>
+            <th>Wins</th>
+            <th>Losses</th>
+        </tr>
+    </thead>
+    <tbody>
+    @{
+        foreach(var user in Model.Users)
+        {
+            <tr>
+                <td><a href="users/@user.UserId">@user.Username</a></td>
+                <td>@user.Wins</td>
+                <td>@user.Losses</td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+
+<h3>Upcoming Matches</h3>
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Match</th>
             <th>Date</th>
             <th>Guest(s)</th>
-            <th>Action</th>
+            <th>Action1</th>
+            <th>Action2</th>
         </tr>
     </thead>
     <tbody>
 
-
 @{
     foreach(var wedding in ViewBag.Weddings)
     {
-        <tr>
-            <td><a href="/weddings/@wedding.Id">@wedding.WedderOne & @wedding.WedderTwo</a></td>
-            <td>@wedding.Date.ToString("D")</td>
-            <td>@wedding.Guests.Count</td>
+        if(@wedding.WinnerId == 0)
+        {
+            <tr>
+                <td><a href="/weddings/@wedding.Id">@wedding.WedderOne & @wedding.WedderTwo</a></td>
+                <td>@wedding.Date.ToString("D")</td>
+                <td>@wedding.Guests.Count</td>
 
-        
-            @{
-                bool attending = false;
-            
-                if(@wedding.CreatorId == @ViewBag.User.UserId)
-                {
-                    <td><a href="/weddings/@wedding.Id/delete">Delete</a></td>
-                }
-                else
-                {
-                    foreach(var guest in @wedding.Guests)
+                @{
+                    bool attending = false;
+                
+                    if(@wedding.CreatorId == @ViewBag.User.UserId)
                     {
-                        if(@guest.UserId == @ViewBag.User.UserId)
+                        <td><a href="/weddings/@wedding.Id/delete">Delete</a></td>
+                        <td><a href="/weddings/@wedding.Id/simulate">Simulate</a></td>
+                    }
+                    else
+                    {
+                        foreach(var guest in @wedding.Guests)
                         {
-                            attending = true;
-                            
+                            if(@guest.UserId == @ViewBag.User.UserId)
+                            {
+                                attending = true;
+                                
+                            }
                         }
-                    }
-                    if(attending == true){
-                        <td><a href="/weddings/@wedding.Id/leave">Un-RSVP</a></td>
-                    }
-                    else{
-                        <td><a href="/weddings/@wedding.Id/rsvp">RSVP</a></td>  
+                        if(attending == true)
+                        {
+                            <td><a href="/weddings/@wedding.Id/leave">Un-RSVP</a></td>
+                        }
+                        else
+                        {
+                            <td><a href="/weddings/@wedding.Id/rsvp">RSVP</a></td>  
+                        }
+                        
                     }
                 }
-            }
-
-
-        </tr>
+            </tr>
+        }
     }
 }
-        
- 
-
-
     </tbody>
 </table>
-<hr>
-<p><a href="/weddings/create">New Wedding</a> | <a href="/logout">Logout</a></p>
+
+<h3>Completed Matches</h3>
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Match</th>
+            <th>Action2</th>
+        </tr>
+    </thead>
+    <tbody>
+    @{
+        foreach(var wedding in ViewBag.Weddings)
+        {
+            if(@wedding.WinnerId != 0)
+            {
+                <tr>
+                    <td><a href="/weddings/@wedding.Id">@wedding.WedderOne & @wedding.WedderTwo</a></td>
+                    @if(@wedding.CreatorId == @ViewBag.User.UserId)
+                    {
+                        <td><a href="/weddings/@wedding.Id/delete">Delete</a></td>
+                    }
+                    <td><a href="/weddings/@wedding.Id">See Result</a></td>
+                </tr>
+            }  
+        }
+    }
+    </tbody>
+</table>

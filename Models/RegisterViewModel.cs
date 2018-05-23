@@ -7,13 +7,13 @@ namespace csharpWeddings.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "You must enter a first name")]
+        [Required(ErrorMessage = "You must enter a username")]
         [MinLength(4, ErrorMessage = "First name must be at least 4 characters")]
-        public string FirstName { get; set; }
+        public string Username { get; set; }
 
-        [Required(ErrorMessage = "You must enter a last name")]
-        [MinLength(4, ErrorMessage = "Last name must be at least 4 characters")]
-        public string LastName { get; set; }
+        // [Required(ErrorMessage = "You must enter a last name")]
+        // [MinLength(4, ErrorMessage = "Last name must be at least 4 characters")]
+        // public string LastName { get; set; }
 
         [Required(ErrorMessage = "You must enter an email")]
         [EmailAddress]
